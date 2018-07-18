@@ -41,3 +41,4 @@ rsconnect/
 *.cvs.gz
 tmp.txt
 *.gz
+*.RData
