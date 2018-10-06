@@ -42,3 +42,4 @@ rsconnect/
 tmp.txt
 *.gz
 *.RData
+.DS_Store
