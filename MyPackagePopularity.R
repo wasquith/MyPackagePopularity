@@ -1,8 +1,8 @@
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2013-01-01'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2018-07-16')
+  start <- as.Date('2018-10-03'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2018-10-04')
 
   all_days <- seq(start, today, by = 'day')
 
@@ -72,11 +72,11 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20180614.RData") # Packages is coming back
+load("Packages_20130101_20181002.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20180614.RData")
+#save(Packages, file="Packages_20130101_20181002.RData")
 
 library(kernlab)
 tmp <- AP[complete.cases(AP),]
@@ -166,6 +166,9 @@ library(lmomco)
 plot(pp(AP$lmomco_cnt, sort=FALSE),pp(AP$copBasic_cnt, sort=FALSE))
 plot(qnorm(pp(AP$lmomco_cnt, sort=FALSE)),
      qnorm(pp(AP$copBasic_cnt, sort=FALSE)))
+
+print(sum(AP$lmomco_cnt,   na.rm=TRUE)+
+      sum(AP$copBasic_cnt, na.rm=TRUE))
 
 # if (!require('devtools')) install.packages('devtools'); require('devtools')
 # make sure you have Rtools installed first! if not, then run:
