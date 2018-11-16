@@ -1,8 +1,8 @@
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2018-10-03'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2018-10-04')
+  start <- as.Date('2018-11-08'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2018-11-14')
 
   all_days <- seq(start, today, by = 'day')
 
@@ -72,24 +72,30 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20181002.RData") # Packages is coming back
+load("Packages_20130101_20181107.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20181002.RData")
+#save(Packages, file="Packages_20130101_20181107.RData")
 
 library(kernlab)
+yearize <- 365
 tmp <- AP[complete.cases(AP),]
-svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/(60*60*24*365)))
+svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize))
 y <- predict(svmy)
 scy <- slot(svmy, "scaling")
 y <- scy$y.scale$`scaled:scale`*y + scy$y.scale$`scaled:center`
 
-svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/(60*60*24*365)))
+svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize))
 z <- predict(svmz)
 scz <- slot(svmz, "scaling")
 z <- scz$y.scale$`scaled:scale`*z + scz$y.scale$`scaled:center`
 
+#ix <- 1:length(tmp$date)
+#rx <- as.numeric(tmp$date[ix])/yearize; ry <- tmp$lmomco_pct[ix]; rz <- tmp$lmomco_pct[ix]
+#rvmy <- rvm(ry~rx, data=data.frame(ry=ry, rx=rx), subset=sample(ix,100))
+#rvmz <- rvm(rz~rx, sample(ix, 100))
+#lines(tmp$date, predict(rvmy, as.numeric(tmp$date)/yearize)[,1])
 
 COP <- read.table("timeline_copBasic.txt", header=TRUE, stringsAsFactors=FALSE)
 LMR <- read.table("timeline_lmomco.txt",   header=TRUE, stringsAsFactors=FALSE)
@@ -194,3 +200,12 @@ print(sum(AP$lmomco_cnt,   na.rm=TRUE)+
 
 
 #https://www.r-bloggers.com/analyzing-package-dependencies-and-download-logs-from-rstudio-and-a-start-towards-building-an-r-recommendation-engine/
+
+all.files <- list.files(".", pattern=".gz")
+DD <- as.Date(gsub(all.files, pattern=".csv.gz", replacement=""))
+col <- (weekdays(DD) == "Saturday")+(weekdays(DD) == "Sunday")+1
+cols <- c("blue","red")
+plot(DD, file.info(all.files)$size/1E6, cex=0.5, lwd=0.5, log="y",
+         xlab="YEAR", ylab="MB of daily downloads", col=cols[col])
+
+
