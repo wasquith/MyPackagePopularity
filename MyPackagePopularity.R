@@ -1,8 +1,8 @@
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2018-11-08'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2018-11-14')
+  start <- as.Date('2019-01-28'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2019-02-01')
 
   all_days <- seq(start, today, by = 'day')
 
@@ -61,7 +61,7 @@ for(i in 1:m) {
                                               copBasic$count, " with ",
                          n, " total all CRAN downloads")
    AP[i,1]    <- as.character(all_days[i])
-   AP[i,2:10]  <- c(lmomco$rank,
+   AP[i,2:10] <- c(lmomco$rank,
          100*round(lmomco$rank/n, digits=4),
                    lmomco$count,     lmomco$countries,
                    copBasic$rank,
@@ -72,30 +72,20 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20181107.RData") # Packages is coming back
+load("Packages_20130101_20190127.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20181107.RData")
+#save(Packages, file="Packages_20130101_20190127.RData")
 
 library(kernlab)
 yearize <- 365
 tmp <- AP[complete.cases(AP),]
 svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize))
-y <- predict(svmy)
-scy <- slot(svmy, "scaling")
-y <- scy$y.scale$`scaled:scale`*y + scy$y.scale$`scaled:center`
+y <- predict(svmy, tmp)
 
 svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize))
-z <- predict(svmz)
-scz <- slot(svmz, "scaling")
-z <- scz$y.scale$`scaled:scale`*z + scz$y.scale$`scaled:center`
-
-#ix <- 1:length(tmp$date)
-#rx <- as.numeric(tmp$date[ix])/yearize; ry <- tmp$lmomco_pct[ix]; rz <- tmp$lmomco_pct[ix]
-#rvmy <- rvm(ry~rx, data=data.frame(ry=ry, rx=rx), subset=sample(ix,100))
-#rvmz <- rvm(rz~rx, sample(ix, 100))
-#lines(tmp$date, predict(rvmy, as.numeric(tmp$date)/yearize)[,1])
+z <- predict(svmz, tmp)
 
 COP <- read.table("timeline_copBasic.txt", header=TRUE, stringsAsFactors=FALSE)
 LMR <- read.table("timeline_lmomco.txt",   header=TRUE, stringsAsFactors=FALSE)
@@ -140,7 +130,7 @@ ix <- sample(ix, size=length(ix), replace=FALSE)
 ap <- ap[ix,]; ap$isCB <- as.logical(ap$isCB)
 ap$col <- rgb(1,.4,0,.3); ap$col[! ap$isCB] <- rgb(0,.4,1,.3)
 ap$cex <- ap$copBasic_countries/10
-ap$cex[is.na(ap$cex)] <- ap$lmomco_countries[is.na(ap$cex)]/10
+ap$cex[is.na(ap$cex)] <- ap$lmomco_countries[is.na(ap$cex)]/20
 ap$pct <- ap$copBasic_pct
 ap$pct[is.na(ap$pct)] <- ap$lmomco_pct[is.na(ap$pct)]
 
@@ -152,7 +142,7 @@ lines(tmp$date, z, col=2, lwd=4)
 legend(as.Date("2013-02-01"), 21,
        c("Trend line for lmomco package by kernlab::ksvm(<defaults>)",
          "Trend line for copBasic package by kernlab::ksvm(<defaults>)",
-         "lmomco package (L-moments and many distributions) [size {cex}=no. countries/10]",
+         "lmomco package (L-moments and many distributions) [size {cex}=no. countries/20]",
          "copBasic package (copulas, utilities, and theory) [size {cex}=no. countries/10]"),
        pch=c(NA,NA,16,16), lwd=c(4,4,NA,NA), bty="o", box.col=NA, bg=grey(1,.8),
        col=c(4,2,rgb(0,.4,1),rgb(1,.4,0)), cex=0.85,
@@ -173,8 +163,10 @@ plot(pp(AP$lmomco_cnt, sort=FALSE),pp(AP$copBasic_cnt, sort=FALSE))
 plot(qnorm(pp(AP$lmomco_cnt, sort=FALSE)),
      qnorm(pp(AP$copBasic_cnt, sort=FALSE)))
 
-print(sum(AP$lmomco_cnt,   na.rm=TRUE)+
-      sum(AP$copBasic_cnt, na.rm=TRUE))
+message("Total lmomco count:   ", sum(AP$lmomco_cnt,   na.rm=TRUE))
+message("Total copBasic count: ", sum(AP$copBasic_cnt, na.rm=TRUE))
+message("Total both count:     ", sum(AP$lmomco_cnt,   na.rm=TRUE)+
+                                  sum(AP$copBasic_cnt, na.rm=TRUE))
 
 # if (!require('devtools')) install.packages('devtools'); require('devtools')
 # make sure you have Rtools installed first! if not, then run:
