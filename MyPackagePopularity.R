@@ -142,7 +142,7 @@ points(ap$date, ap$pct, cex=ap$cex, col=ap$col, pch=16, lwd=0.4)
 #points(ap$date[! ap$isCB], ap$lmomco_pct[! ap$isCB], cex=ap$lmomco_countries[! ap$isCB]/10, lwd=0.4, pch=16, col=rgb(0,.4,1,.3))
 lines(tmp$date, y, col=4, lwd=4)
 lines(tmp$date, z, col=2, lwd=4)
-legend(as.Date("2013-02-01"), 31,
+legend(as.Date("2013-02-01"), 36,
        c("Trend line for lmomco package by kernlab::ksvm(<defaults>)",
          "Trend line for copBasic package by kernlab::ksvm(<defaults>)",
          "Release date of R (see outside 'rug' ticks on horizontal axis)",
