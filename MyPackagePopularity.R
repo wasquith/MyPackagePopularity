@@ -2,7 +2,7 @@
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
   start <- as.Date('2019-05-11'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2019-05-12')
+  today <- as.Date('2019-05-23')
 
   all_days <- seq(start, today, by = 'day')
 
@@ -87,8 +87,10 @@ y <- predict(svmy, tmp)
 svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize))
 z <- predict(svmz, tmp)
 
+RT  <- read.table("timeline_R.txt",        header=TRUE, stringsAsFactors=FALSE)
 COP <- read.table("timeline_copBasic.txt", header=TRUE, stringsAsFactors=FALSE)
 LMR <- read.table("timeline_lmomco.txt",   header=TRUE, stringsAsFactors=FALSE)
+RT$time  <- as.Date(RT$time)
 COP$time <- as.Date(COP$time)
 LMR$time <- as.Date(LMR$time)
 
@@ -98,6 +100,7 @@ plot(AP$date, AP$copBasic_pct, type="n",
      xlab="Date (daily download data from cran-logs.rstudio.com)", tcl=0.5,
      ylab="Rank as percentile against other package downloads (100 is best)", ylim=c(0,100),
      xaxs="i", yaxs="i")
+rug(RT$time, tcl=-0.5, col="#22a524", lwd=3)
 for(i in seq(20,95, by=5)) {
    lines(par()$usr[1:2], rep(i,2), lty=2, lwd=0.6)
 }
@@ -139,13 +142,16 @@ points(ap$date, ap$pct, cex=ap$cex, col=ap$col, pch=16, lwd=0.4)
 #points(ap$date[! ap$isCB], ap$lmomco_pct[! ap$isCB], cex=ap$lmomco_countries[! ap$isCB]/10, lwd=0.4, pch=16, col=rgb(0,.4,1,.3))
 lines(tmp$date, y, col=4, lwd=4)
 lines(tmp$date, z, col=2, lwd=4)
-legend(as.Date("2013-02-01"), 21,
+legend(as.Date("2013-02-01"), 31,
        c("Trend line for lmomco package by kernlab::ksvm(<defaults>)",
          "Trend line for copBasic package by kernlab::ksvm(<defaults>)",
+         "Release date of R (see outside 'rug' ticks on horizontal axis)",
+         "Release date of lmomco (solid and dashed aids viewing when overplotting)",
+         "Release date of copBasic (solid and dashed aids viewing when overplotting)",
          "lmomco package (L-moments and many distributions) [size {cex}=no. countries/20]",
          "copBasic package (copulas, utilities, and theory) [size {cex}=no. countries/10]"),
-       pch=c(NA,NA,16,16), lwd=c(4,4,NA,NA), bty="o", box.col=NA, bg=grey(1,.8),
-       col=c(4,2,rgb(0,.4,1),rgb(1,.4,0)), cex=0.85,
+       pch=c(NA,NA,NA,NA,NA,16,16), lwd=c(4,4,3,1,1,NA,NA), bty="o", box.col=NA, bg=grey(1,.8),
+       col=c(4,2,"#22a524",4,2,rgb(0,.4,1),rgb(1,.4,0)), cex=0.85,
       )
 mtext("TREND IN R PACKAGE POPULARITY (lmomco, copBasic)")
 dev.off()
