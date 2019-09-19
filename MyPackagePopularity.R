@@ -1,8 +1,8 @@
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2019-08-01'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2019-08-04')
+  start <- as.Date('2019-09-01'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2019-09-18')
 
   all_days <- seq(start, today, by = 'day')
 
@@ -72,16 +72,16 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20190731.RData") # Packages is coming back
+load("Packages_20130101_20190831.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20190731.RData")
+#save(Packages, file="Packages_20130101_20190831.RData")
 
 library(kernlab)
 yearize <- 365
 tmp <- AP[complete.cases(AP),]
-svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize))
+svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize), cross=30)
 y <- predict(svmy, tmp)
 
 svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize))
@@ -166,7 +166,7 @@ if(m > 180) {
 
 library(lmomco)
 plot(pp(AP$lmomco_cnt, sort=FALSE),pp(AP$copBasic_cnt, sort=FALSE))
-plot(qnorm(pp(AP$lmomco_cnt, sort=FALSE)),
+plot(qnorm(pp(AP$lmomco_cnt,   sort=FALSE)),
      qnorm(pp(AP$copBasic_cnt, sort=FALSE)))
 
 message("Total lmomco count:   ", sum(AP$lmomco_cnt,   na.rm=TRUE))
@@ -200,10 +200,28 @@ message("Total both count:     ", sum(AP$lmomco_cnt,   na.rm=TRUE)+
 #https://www.r-bloggers.com/analyzing-package-dependencies-and-download-logs-from-rstudio-and-a-start-towards-building-an-r-recommendation-engine/
 
 all.files <- list.files(".", pattern=".gz")
-DD <- as.Date(gsub(all.files, pattern=".csv.gz", replacement=""))
-col <- (weekdays(DD) == "Saturday")+(weekdays(DD) == "Sunday")+1
+DF <- as.Date(gsub(all.files, pattern=".csv.gz", replacement=""))
+col <- (weekdays(DF) == "Saturday")+(weekdays(DF) == "Sunday")+1
 cols <- c("blue","red")
-plot(DD, file.info(all.files)$size/1E6, cex=0.5, lwd=0.5, log="y",
+plot(DF, file.info(all.files)$size/1E6, cex=0.5, lwd=0.5, log="y",
          xlab="YEAR", ylab="MB of daily downloads", col=cols[col])
 
-
+NP <- AP
+DT <- strsplit(as.character(NP$date), "-")
+NP$YY <- sapply(DT, function(d) d[1])
+NP$MM <- sapply(DT, function(d) d[2])
+NP$DD <- sapply(DT, function(d) d[3])
+RHO <- NULL
+for(yy in unique(NP$YY[! is.na(NP$YY)])) {
+  tmp <- NP[NP$YY == yy,]
+  for(mm in unique(tmp$MM[! is.na(tmp$MM)])) {
+    kmp <- tmp[tmp$MM == mm,]
+    kmp <- kmp[complete.cases(kmp),]
+    my.rho <- cor(kmp$lmomco_pct, kmp$copBasic_pct, method="kendall")
+    dt <- paste0(yy,"-",mm,"-01")
+    RHO <- rbind(RHO, data.frame(date=dt, corr=my.rho, n=sum(kmp$lmomco_cnt+kmp$copBasic_cnt),
+                                 stringsAsFactors=FALSE))
+  }
+}
+RHO$date <- as.Date(RHO$date)
+plot(RHO$date, RHO$corr, cex=RHO$n/1000)
