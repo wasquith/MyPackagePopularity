@@ -2,7 +2,7 @@
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
   start <- as.Date('2019-09-01'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2019-09-18')
+  today <- as.Date('2019-09-22')
 
   all_days <- seq(start, today, by = 'day')
 
@@ -153,7 +153,7 @@ legend(as.Date("2013-02-01"), 36,
        pch=c(NA,NA,NA,NA,NA,16,16), lwd=c(4,4,3,1,1,NA,NA), bty="o", box.col=NA, bg=grey(1,.8),
        col=c(4,2,"#22a524",4,2,rgb(0,.4,1),rgb(1,.4,0)), cex=0.85,
       )
-mtext("TREND IN R PACKAGE POPULARITY (lmomco, copBasic)")
+mtext("TRENDS IN 'GLOBAL' R PACKAGE POPULARITY (lmomco, copBasic)")
 dev.off()
 
 m <- length(AP$lmomco_pct)
