@@ -1,8 +1,8 @@
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2019-09-01'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2019-09-22')
+  start <- as.Date('2020-02-01'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2020-02-02')
 
   all_days <- seq(start, today, by = 'day')
 
@@ -72,19 +72,19 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20190831.RData") # Packages is coming back
+load("Packages_20130101_20200131.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20190831.RData")
+#save(Packages, file="Packages_20130101_20200131.RData")
 
 library(kernlab)
 yearize <- 365
 tmp <- AP[complete.cases(AP),]
-svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize), cross=30)
+svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize), cross=0)
 y <- predict(svmy, tmp)
 
-svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize))
+svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize), cross=0)
 z <- predict(svmz, tmp)
 
 RT  <- read.table("timeline_R.txt",        header=TRUE, stringsAsFactors=FALSE)
@@ -159,9 +159,9 @@ dev.off()
 m <- length(AP$lmomco_pct)
 if(m > 180) {
   message("Mean last 180 days lmomco: ",
-           mean(AP$lmomco_pct[(m-180):m], na.rm=TRUE))
+           round(mean(AP$lmomco_pct[  (m-180):m], na.rm=TRUE), digits=1))
   message("Mean last 180 days copBasic: ",
-           mean(AP$copBasic_pct[(m-180):m], na.rm=TRUE))
+           round(mean(AP$copBasic_pct[(m-180):m], na.rm=TRUE), digits=1))
 }
 
 library(lmomco)
