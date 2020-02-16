@@ -2,7 +2,7 @@
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
   start <- as.Date('2020-02-01'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2020-02-02')
+  today <- as.Date('2020-02-15')
 
   all_days <- seq(start, today, by = 'day')
 
