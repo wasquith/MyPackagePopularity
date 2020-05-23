@@ -1,10 +1,10 @@
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2020-03-01'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2020-03-13')
+  start <- as.Date('2020-05-21'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2020-05-21')
 
-  all_days <- seq(start, today, by = 'day')
+  all_days <- seq(start, today, by='day')
 
   year <- as.POSIXlt(all_days)$year + 1900
   files <- paste0(all_days, '.csv.gz')
@@ -72,25 +72,25 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20200229.RData") # Packages is coming back
+load("Packages_20130101_20200521.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20200229.RData")
+#save(Packages, file="Packages_20130101_20200521.RData")
 
 library(kernlab)
 yearize <- 365
 tmp <- AP[complete.cases(AP),]
-svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize), cross=0)
+svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize), cross=0, C=0.5)
 y <- predict(svmy, tmp)
 
-svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize), cross=0)
+svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize), cross=0, C=0.5)
 z <- predict(svmz, tmp)
 
 RT  <- read.table("timeline_R.txt",        header=TRUE, stringsAsFactors=FALSE)
 COP <- read.table("timeline_copBasic.txt", header=TRUE, stringsAsFactors=FALSE)
 LMR <- read.table("timeline_lmomco.txt",   header=TRUE, stringsAsFactors=FALSE)
-RT$time  <- as.Date(RT$time)
+RT$time  <- as.Date( RT$time)
 COP$time <- as.Date(COP$time)
 LMR$time <- as.Date(LMR$time)
 
