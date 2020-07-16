@@ -1,8 +1,8 @@
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2020-05-21'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2020-05-21')
+  start <- as.Date('2020-07-01'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2020-07-15')
 
   all_days <- seq(start, today, by='day')
 
@@ -72,11 +72,11 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20200521.RData") # Packages is coming back
+load("Packages_20130101_20200630.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20200521.RData")
+#save(Packages, file="Packages_20130101_20200630.RData")
 
 library(kernlab)
 yearize <- 365
@@ -105,16 +105,16 @@ for(i in seq(20,95, by=5)) {
    lines(par()$usr[1:2], rep(i,2), lty=2, lwd=0.6)
 }
 for(i in LMR$time) {
-  lines(rep(i,2), c(0,50), col=4, lty=2)
+  lines(rep(i,2), c(0,50), col="blue", lty=2)
 }
 for(i in COP$time) {
-  lines(rep(i,2), c(50,200), col=2, lty=2)
+  lines(rep(i,2), c(50,200), col="red", lty=2)
 }
 for(i in LMR$time) {
-  lines(rep(i,2), c(50,100), col=4)
+  lines(rep(i,2), c(50,100), col="blue")
 }
 for(i in COP$time) {
-  lines(rep(i,2), c(0,50), col=2)
+  lines(rep(i,2), c(0,50), col="red")
 }
 jnkcb <- data.frame(date=AP$date,
                     copBasic_pct=AP$copBasic_pct,
@@ -140,8 +140,8 @@ ap$pct[is.na(ap$pct)] <- ap$lmomco_pct[is.na(ap$pct)]
 points(ap$date, ap$pct, cex=ap$cex, col=ap$col, pch=16, lwd=0.4)
 #points(ap$date[ap$isCB], ap$copBasic_pct[ap$isCB], cex=ap$copBasic_countries[ap$isCB]/10, lwd=0.4, pch=16, col=rgb(1,.4,0,.3))
 #points(ap$date[! ap$isCB], ap$lmomco_pct[! ap$isCB], cex=ap$lmomco_countries[! ap$isCB]/10, lwd=0.4, pch=16, col=rgb(0,.4,1,.3))
-lines(tmp$date, y, col=4, lwd=4)
-lines(tmp$date, z, col=2, lwd=4)
+lines(tmp$date, y, col="blue", lwd=4)
+lines(tmp$date, z, col="red", lwd=4)
 legend(as.Date("2013-02-01"), 36,
        c("Trend line for lmomco package by kernlab::ksvm(<defaults>)",
          "Trend line for copBasic package by kernlab::ksvm(<defaults>)",
