@@ -4,7 +4,7 @@ the.origin <- "2019-10-31"
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
   start <- as.Date('2020-05-22'); #start <- as.Date(the.origin)
-  today <- as.Date('2020-05-22')
+  today <- as.Date('2020-07-14')
 
   all_days <- seq(start, today, by='day')
 
