@@ -3,8 +3,8 @@ the.origin <- "2019-10-31"
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2020-12-01'); #start <- as.Date(the.origin)
-  today <- as.Date('2020-12-02')
+  start <- as.Date('2021-02-01'); #start <- as.Date(the.origin)
+  today <- as.Date('2021-02-24')
 
   all_days <- seq(start, today, by='day')
 
@@ -37,7 +37,7 @@ for(i in 1:m) {
    names(P) <- c("package", "count")
    P <- P[order(P$count, decreasing=FALSE),]; n <- length(P$count)
    P$rank <- 1:n
-   dflm <- df[df$package == the.pkg,   ]
+   dflm <- df[df$package == the.pkg,  ]
    Cl <- length(unique(dflm$country))
    PKG   <- P[P$package == the.pkg,   ]
    if(length(PKG$count) == 0) {
@@ -58,12 +58,12 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Package <- AP
 save(Package, file=paste0(the.pkg,".RData")); rm(Package)
-file <- paste0(the.pkg,"_","20191001_20201130.RData")
+file <- paste0(the.pkg,"_","20191001_20201231.RData")
 if(file.exists(file)) load(file) # Packages is coming back
 AP <- merge(Package, AP, all=TRUE)
 
 #Package <- AP
-#save(Package, file=paste0(the.pkg,"_","20191001_20201130.RData"))
+#save(Package, file=paste0(the.pkg,"_","20191001_20201231.RData"))
 
 library(kernlab)
 yearize <- 365
