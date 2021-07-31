@@ -1,8 +1,16 @@
+need_to_see_srcfile <- "MyPackagePopularity.R"
+if("rstudioapi" %in% installed.packages()) {
+  if(rstudioapi::isAvailable()) {
+    if(! file.exists(need_to_see_srcfile)) {
+      setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+    }
+  }
+}
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2021-02-01'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2021-02-24')
+  start <- as.Date('2021-07-18'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2021-07-29')
 
   all_days <- seq(start, today, by='day')
 
@@ -72,11 +80,11 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20210131.RData") # Packages is coming back
+load("Packages_20130101_20210717.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20210131.RData")
+#save(Packages, file="Packages_20130101_20210717.RData")
 
 library(kernlab)
 yearize <- 365
@@ -151,7 +159,7 @@ legend(as.Date("2013-02-01"), 36,
          "lmomco package (L-moments and many distributions) [size {cex}=no. countries/20]",
          "copBasic package (copulas, utilities, and theory) [size {cex}=no. countries/10]"),
        pch=c(NA,NA,NA,NA,NA,16,16), lwd=c(4,4,3,1,1,NA,NA), bty="o", box.col=NA, bg=grey(1,.8),
-       col=c(4,2,"#22a524",4,2,rgb(0,.4,1),rgb(1,.4,0)), cex=0.85,
+       col=c("blue","red","#22a524","blue","red",rgb(0,.4,1),rgb(1,.4,0)), cex=0.85,
       )
 mtext("TRENDS IN 'GLOBAL' R PACKAGE POPULARITY (lmomco, copBasic)")
 dev.off()

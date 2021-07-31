@@ -1,10 +1,19 @@
+need_to_see_srcfile <- "MyPackagePopularity_MGBT.R"
+if("rstudioapi" %in% installed.packages()) {
+  if(rstudioapi::isAvailable()) {
+    if(! file.exists(need_to_see_srcfile)) {
+      setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+    }
+  }
+}
+
 the.pkg <- "MGBT"
 the.origin <- "2019-10-31"
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2021-02-01'); #start <- as.Date(the.origin)
-  today <- as.Date('2021-02-24')
+  start <- as.Date('2021-06-01'); #start <- as.Date(the.origin)
+  today <- as.Date('2021-07-29')
 
   all_days <- seq(start, today, by='day')
 
@@ -58,12 +67,12 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Package <- AP
 save(Package, file=paste0(the.pkg,".RData")); rm(Package)
-file <- paste0(the.pkg,"_","20191001_20201231.RData")
+file <- paste0(the.pkg,"_","20191001_20210531.RData")
 if(file.exists(file)) load(file) # Packages is coming back
 AP <- merge(Package, AP, all=TRUE)
 
 #Package <- AP
-#save(Package, file=paste0(the.pkg,"_","20191001_20201231.RData"))
+#save(Package, file=paste0(the.pkg,"_","20191001_20210531.RData"))
 
 library(kernlab)
 yearize <- 365
