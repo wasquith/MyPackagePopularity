@@ -9,8 +9,8 @@ if("rstudioapi" %in% installed.packages()) {
 
 options(repos = c(CRAN = "http://cran.rstudio.com"))
   # Here's an easy way to get all the URLs in R
-  start <- as.Date('2021-07-18'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2021-07-29')
+  start <- as.Date('2022-02-04'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2022-02-10')
 
   all_days <- seq(start, today, by='day')
 
@@ -80,11 +80,11 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20210717.RData") # Packages is coming back
+load("Packages_20130101_20220203.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20210717.RData")
+#save(Packages, file="Packages_20130101_20220203.RData")
 
 library(kernlab)
 yearize <- 365
