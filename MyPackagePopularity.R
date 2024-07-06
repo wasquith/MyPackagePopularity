@@ -7,11 +7,10 @@ if("rstudioapi" %in% installed.packages()) {
   }
 }
 
-options(repos = c(CRAN = "http://cran.rstudio.com"),
-        timeout=180)
-  # Here's an easy way to get all the URLs in R
-  start <- as.Date('2023-06-01'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2023-06-05')
+options(repos = c(CRAN = "http://cran.rstudio.com"), timeout=180)
+  # Here's an easy  way to get all the URLs in R
+  start <- as.Date('2024-06-15'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2024-07-05')
 
   all_days <- seq(start, today, by='day')
 
@@ -81,11 +80,11 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20230531.RData") # Packages is coming back
+load("Packages_20130101_20240614.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20230531.RData")
+#save(Packages, file="Packages_20130101_20240614.RData")
 
 library(kernlab)
 yearize <- 365
@@ -103,7 +102,7 @@ RT$time  <- as.Date( RT$time)
 COP$time <- as.Date(COP$time)
 LMR$time <- as.Date(LMR$time)
 
-pdf("MyPackagePopularity.pdf", useDingbats=FALSE, width=7, height=6)
+pdf("MyPackagePopularity.pdf", useDingbats=FALSE, width=8, height=6.5)
 par(las=1, lend=1, mgp=c(3,0.5,0))
 plot(AP$date, AP$copBasic_pct, type="n",
      xlab="Date (daily download data from cran-logs.rstudio.com)", tcl=0.5,
