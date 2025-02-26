@@ -9,8 +9,8 @@ if("rstudioapi" %in% installed.packages()) {
 
 options(repos = c(CRAN = "http://cran.rstudio.com"), timeout=180)
   # Here's an easy  way to get all the URLs in R
-  start <- as.Date('2024-06-15'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2024-07-05')
+  start <- as.Date('2025-02-26'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2025-02-26')
 
   all_days <- seq(start, today, by='day')
 
@@ -80,19 +80,19 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_20240614.RData") # Packages is coming back
+load("Packages_20130101_20250225.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_20240614.RData")
+#save(Packages, file="Packages_20130101_20250225.RData")
 
 library(kernlab)
 yearize <- 365
 tmp <- AP[complete.cases(AP),]
-svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize), cross=0, C=0.5)
+svmy <- ksvm(tmp$lmomco_pct~I(as.numeric(tmp$date)/yearize), cross=0, C=.10)
 y <- predict(svmy, tmp)
 
-svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize), cross=0, C=0.5)
+svmz <- ksvm(tmp$copBasic_pct~I(as.numeric(tmp$date)/yearize), cross=0, C=.10)
 z <- predict(svmz, tmp)
 
 RT  <- read.table("timeline_R.txt",        header=TRUE, stringsAsFactors=FALSE)
@@ -106,23 +106,23 @@ pdf("MyPackagePopularity.pdf", useDingbats=FALSE, width=8, height=6.5)
 par(las=1, lend=1, mgp=c(3,0.5,0))
 plot(AP$date, AP$copBasic_pct, type="n",
      xlab="Date (daily download data from cran-logs.rstudio.com)", tcl=0.5,
-     ylab="Rank as percentile against other package downloads (100 is best)", ylim=c(0,100),
+     ylab="Rank as percentile against other package downloads (100 is best)", ylim=c(20,100),
      xaxs="i", yaxs="i")
 rug(RT$time, tcl=-0.5, col="#22a524", lwd=3)
 for(i in seq(20,95, by=5)) {
    lines(par()$usr[1:2], rep(i,2), lty=2, lwd=0.6)
 }
 for(i in LMR$time) {
-  lines(rep(i,2), c(0,50), col="blue", lty=2)
+  lines(rep(i,2), c(20,60), col="blue", lty=2)
 }
 for(i in COP$time) {
-  lines(rep(i,2), c(50,200), col="red", lty=2)
+  lines(rep(i,2), c(60,100), col="red", lty=2)
 }
 for(i in LMR$time) {
-  lines(rep(i,2), c(50,100), col="blue")
+  lines(rep(i,2), c(60,100), col="blue")
 }
 for(i in COP$time) {
-  lines(rep(i,2), c(0,50), col="red")
+  lines(rep(i,2), c(0,60), col="red")
 }
 jnkcb <- data.frame(date=AP$date,
                     copBasic_pct=AP$copBasic_pct,
@@ -139,9 +139,9 @@ jnklm <- data.frame(date=AP$date,
 ap <- rbind(jnkcb, jnklm); ap <- ap[! is.na(ap$date),]; ix <- 1:length(ap$date)
 ix <- sample(ix, size=length(ix), replace=FALSE)
 ap <- ap[ix,]; ap$isCB <- as.logical(ap$isCB)
-ap$col <- rgb(1,.4,0,.3); ap$col[! ap$isCB] <- rgb(0,.4,1,.3)
-ap$cex <- ap$copBasic_countries/10
-ap$cex[is.na(ap$cex)] <- ap$lmomco_countries[is.na(ap$cex)]/20
+ap$col <- rgb(1,.4,0,.6); ap$col[! ap$isCB] <- rgb(0,.4,1,.5)
+ap$cex <- ap$copBasic_countries/20
+ap$cex[is.na(ap$cex)] <- ap$lmomco_countries[is.na(ap$cex)]/30
 ap$pct <- ap$copBasic_pct
 ap$pct[is.na(ap$pct)] <- ap$lmomco_pct[is.na(ap$pct)]
 
@@ -149,17 +149,17 @@ points(ap$date, ap$pct, cex=ap$cex, col=ap$col, pch=16, lwd=0.4)
 #points(ap$date[ap$isCB], ap$copBasic_pct[ap$isCB], cex=ap$copBasic_countries[ap$isCB]/10, lwd=0.4, pch=16, col=rgb(1,.4,0,.3))
 #points(ap$date[! ap$isCB], ap$lmomco_pct[! ap$isCB], cex=ap$lmomco_countries[! ap$isCB]/10, lwd=0.4, pch=16, col=rgb(0,.4,1,.3))
 lines(tmp$date, y, col="blue", lwd=4)
-lines(tmp$date, z, col="red", lwd=4)
-legend(as.Date("2013-02-01"), 36,
+lines(tmp$date, z, col="red",  lwd=4)
+legend("bottomleft",
        c("Trend line for lmomco package by kernlab::ksvm(<defaults>)",
          "Trend line for copBasic package by kernlab::ksvm(<defaults>)",
          "Release date of R (see outside 'rug' ticks on horizontal axis)",
          "Release date of lmomco (solid and dashed aids viewing when overplotting)",
          "Release date of copBasic (solid and dashed aids viewing when overplotting)",
-         "lmomco package (L-moments and many distributions) [size {cex}=no. countries/20]",
-         "copBasic package (copulas, utilities, and theory) [size {cex}=no. countries/10]"),
+         "lmomco package (L-moments and many distributions) [size {cex}=no. countries/30]",
+         "copBasic package (copulas, utilities, and theory) [size {cex}=no. countries/20]"),
        pch=c(NA,NA,NA,NA,NA,16,16), lwd=c(4,4,3,1,1,NA,NA), bty="o", box.col=NA, bg=grey(1,.8),
-       col=c("blue","red","#22a524","blue","red",rgb(0,.4,1),rgb(1,.4,0)), cex=0.85,
+       col=c("blue","red","#22a524","blue","red",rgb(0,.4,1),rgb(1,.4,0)), cex=0.85, inset=0.003,
       )
 mtext("TRENDS IN 'GLOBAL' R PACKAGE POPULARITY (lmomco, copBasic)")
 dev.off()
