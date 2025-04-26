@@ -10,7 +10,7 @@ if("rstudioapi" %in% installed.packages()) {
 options(repos = c(CRAN = "http://cran.rstudio.com"), timeout=180)
   # Here's an easy  way to get all the URLs in R
   start <- as.Date('2025-02-26'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2025-02-26')
+  today <- as.Date('2025-04-25')
 
   all_days <- seq(start, today, by='day')
 
