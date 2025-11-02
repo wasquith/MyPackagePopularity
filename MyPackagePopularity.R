@@ -9,8 +9,8 @@ if("rstudioapi" %in% installed.packages()) {
 
 options(repos = c(CRAN = "http://cran.rstudio.com"), timeout=180)
   # Here's an easy  way to get all the URLs in R
-  start <- as.Date('2025-04-29'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2025-04-30')
+  start <- as.Date('2025-11-02'); #start <- as.Date('2013-01-01')
+  today <- as.Date('2025-11-02')
 
   all_days <- seq(start, today, by='day')
 
@@ -80,11 +80,11 @@ for(i in 1:m) {
 AP[,1] <- as.Date(AP[,1])
 Packages <- AP
 save(Packages, file="Packages.RData"); rm(Packages)
-load("Packages_20130101_202500428.RData") # Packages is coming back
+load("Packages_20130101_20251111.RData") # Packages is coming back
 AP <- merge(Packages, AP, all=TRUE)
 
 #Packages <- AP
-#save(Packages, file="Packages_20130101_202500428.RData")
+#save(Packages, file="Packages_20130101_20251111.RData")
 
 library(kernlab)
 yearize <- 365
@@ -161,15 +161,16 @@ legend("bottomleft",
        pch=c(NA,NA,NA,NA,NA,16,16), lwd=c(4,4,3,1,1,NA,NA), bty="o", box.col=NA, bg=grey(1,.8),
        col=c("blue","red","#22a524","blue","red",rgb(0,.4,1),rgb(1,.4,0)), cex=0.85, inset=0.003,
       )
-mtext("TRENDS IN 'GLOBAL' R PACKAGE POPULARITY (lmomco, copBasic)")
+mtext("TRENDS IN 'GLOBAL' R PACKAGE POPULARITY (lmomco, copBasic)", line=1.25, font=2)
+mtext(paste0("2013/01/01 through ", format(Sys.time(), "%Y/%m/%d")), line=0.25)
 dev.off()
 
 m <- length(AP$lmomco_pct)
 if(m > 180) {
-  message("Mean last 180 days lmomco: ",
-           round(mean(AP$lmomco_pct[  (m-180):m], na.rm=TRUE), digits=1))
-  message("Mean last 180 days copBasic: ",
-           round(mean(AP$copBasic_pct[(m-180):m], na.rm=TRUE), digits=1))
+  message("Mean last 365 days lmomco: ",
+           round(mean(AP$lmomco_pct[  (m-365):m], na.rm=TRUE), digits=1))
+  message("Mean last 365 days copBasic: ",
+           round(mean(AP$copBasic_pct[(m-365):m], na.rm=TRUE), digits=1))
 }
 
 library(lmomco)
