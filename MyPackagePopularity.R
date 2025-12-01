@@ -10,7 +10,7 @@ if("rstudioapi" %in% installed.packages()) {
 options(repos = c(CRAN = "http://cran.rstudio.com"), timeout=180)
   # Here's an easy  way to get all the URLs in R
   start <- as.Date('2025-11-02'); #start <- as.Date('2013-01-01')
-  today <- as.Date('2025-11-02')
+  today <- as.Date('2025-11-30')
 
   all_days <- seq(start, today, by='day')
 
@@ -161,7 +161,8 @@ legend("bottomleft",
        pch=c(NA,NA,NA,NA,NA,16,16), lwd=c(4,4,3,1,1,NA,NA), bty="o", box.col=NA, bg=grey(1,.8),
        col=c("blue","red","#22a524","blue","red",rgb(0,.4,1),rgb(1,.4,0)), cex=0.85, inset=0.003,
       )
-mtext("TRENDS IN 'GLOBAL' R PACKAGE POPULARITY (lmomco, copBasic)", line=1.25, font=2)
+mtext("TRENDS 'GLOBAL' TRENDS (cran-logs.rstudio.com) IN ASQUITH PACKAGE POPULARITY",
+      line=1.25, font=2)
 mtext(paste0("2013/01/01 through ", format(Sys.time(), "%Y/%m/%d")), line=0.25)
 dev.off()
 
